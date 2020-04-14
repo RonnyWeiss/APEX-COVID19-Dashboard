@@ -272,7 +272,7 @@ SELECT
 JSON_OBJECT ( 
     'title' VALUE 'Time course per day ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()'),
     'itemType' VALUE 'chart',
-    'colSpan' VALUE 5,
+    'colSpan' VALUE 6,
     'height' VALUE 240,
     'isMarked' VALUE DECODE((SELECT V('P32_COUNTRY_FILTER') FROM DUAL),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
@@ -482,7 +482,7 @@ SELECT
 JSON_OBJECT (
     'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()'),
     'itemType' VALUE 'chart',
-    'colSpan' VALUE 3,
+    'colSpan' VALUE 2,
     'height' VALUE 240,
     'isMarked' VALUE DECODE(V('P32_COUNTRY_FILTER'),NULL,NULL,1),
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
@@ -491,11 +491,11 @@ JSON_OBJECT (
         'paddingLeft' VALUE 1,
         'paddingTop' VALUE -5,
         'paddingRight' VALUE 1,
-        'paddingBottom' VALUE 20,
+        'paddingBottom' VALUE 1,
         'legendShow' VALUE 0,
         'legendPosition' VALUE 'bottom',
         'gaugeType' VALUE 'multi',
-        'gaugeFullCircle' VALUE 0),
+        'gaugeFullCircle' VALUE 1),
     'itemData' VALUE (
         SELECT
         JSON_ARRAYAGG(
@@ -642,8 +642,8 @@ SELECT
   'itemData' VALUE '<iframe id="news-4" style="width:100%;border:none;height:70vh" src="https://www.intensivregister.de/#/intensivregister"></iframe>'
   RETURNING BLOB) AS JSON_BLOB FROM DUAL WHERE V('P32_NEWS_ID') = 'German Intensive Care Register';
 
-CREATE OR REPLACE FORCE VIEW V_COVID_DASHBOARD_GER AS
-SELECT
+CREATE OR REPLACE FORCE VIEW V_COVID_DASHBOARD_GER AS 
+  SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
     'title' VALUE 'Total active ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()'),
@@ -820,7 +820,7 @@ SELECT
 JSON_OBJECT ( 
     'title' VALUE 'Time course per day ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()'),
     'itemType' VALUE 'chart',
-    'colSpan' VALUE 5,
+    'colSpan' VALUE 6,
     'height' VALUE 240,
     'isMarked' VALUE DECODE(V('P32_PROVINCE_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter_ger'');void(0);',
@@ -1030,7 +1030,7 @@ SELECT
 JSON_OBJECT (
     'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_PROVINCE_FILTER')||')','()'),
     'itemType' VALUE 'chart',
-    'colSpan' VALUE 3,
+    'colSpan' VALUE 2,
     'height' VALUE 240,
     'isMarked' VALUE DECODE(V('P32_PROVINCE_FILTER'),NULL,NULL,1),
     'optionsLink' VALUE 'javascript:openModal(''filter_ger'');void(0);',
@@ -1039,11 +1039,11 @@ JSON_OBJECT (
         'paddingLeft' VALUE 1,
         'paddingTop' VALUE -5,
         'paddingRight' VALUE 1,
-        'paddingBottom' VALUE 20,
+        'paddingBottom' VALUE 1,
         'legendShow' VALUE 0,
         'legendPosition' VALUE 'bottom',
         'gaugeType' VALUE 'multi',
-        'gaugeFullCircle' VALUE 0),
+        'gaugeFullCircle' VALUE 1),
     'itemData' VALUE (
         SELECT
         JSON_ARRAYAGG(
