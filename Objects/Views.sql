@@ -1,24 +1,24 @@
 CREATE OR REPLACE FORCE VIEW V_COVID_CASES_GER AS
     SELECT
-        PROVINCE,
-        LAT,
-        LONGI,
-        DAY_OCC,
-        VALUE_CONFIRMED,
-        VALUE_CONFIRMED_BE,
-        VALUE_RECOVERED,
-        VALUE_RECOVERED_BE,
-        VALUE_DEATHS,
-        VALUE_DEATHS_BE,
-        VALUE_ACTIVE,
-        VALUE_ACTIVE_BE,
-        UPDATED_ON,
-        POPULATION,
+        HI.PROVINCE,
+        HI.LAT,
+        HI.LONGI,
+        HI.DAY_OCC,
+        HI.VALUE_CONFIRMED,
+        HI.VALUE_CONFIRMED_BE,
+        HI.VALUE_RECOVERED,
+        HI.VALUE_RECOVERED_BE,
+        HI.VALUE_DEATHS,
+        HI.VALUE_DEATHS_BE,
+        HI.VALUE_ACTIVE,
+        HI.VALUE_ACTIVE_BE,
+        HI.UPDATED_ON,
+        GE.POPULATION,
         (SELECT V('WORKSPACE_IMAGES') FROM DUAL) || 'flags/province/flagge-' ||
         LOWER(
             REPLACE(
                 REPLACE(
-                    PROVINCE,
+                    HI.PROVINCE,
                     'ü',
                     'ue'
                 ),
@@ -28,75 +28,75 @@ CREATE OR REPLACE FORCE VIEW V_COVID_CASES_GER AS
         ) ||
         '.png' AS FLAG
     FROM
-        T_COVID_CASES_GER LEFT
-        JOIN T_POP_GER
-        USING ( PROVINCE );
+        T_COVID_CASES_GER HI LEFT
+        JOIN T_POP_GER GE
+        ON HI.PROVINCE = GE.PROVINCE;
 
 CREATE OR REPLACE FORCE VIEW V_COVID_CASES_GER_LATEST AS
     SELECT
-        PROVINCE,
-        LAT,
-        LONGI,
-        DAY_OCC,
-        VALUE_CONFIRMED,
-        VALUE_CONFIRMED_BE,
-        VALUE_RECOVERED,
-        VALUE_RECOVERED_BE,
-        VALUE_DEATHS,
-        VALUE_DEATHS_BE,
-        VALUE_ACTIVE,
-        VALUE_ACTIVE_BE,
-        UPDATED_ON,
-        POPULATION,
-        FLAG
+        GE.PROVINCE,
+        GE.LAT,
+        GE.LONGI,
+        GE.DAY_OCC,
+        GE.VALUE_CONFIRMED,
+        GE.VALUE_CONFIRMED_BE,
+        GE.VALUE_RECOVERED,
+        GE.VALUE_RECOVERED_BE,
+        GE.VALUE_DEATHS,
+        GE.VALUE_DEATHS_BE,
+        GE.VALUE_ACTIVE,
+        GE.VALUE_ACTIVE_BE,
+        GE.UPDATED_ON,
+        GE.POPULATION,
+        GE.FLAG
     FROM
-        V_COVID_CASES_GER
+        V_COVID_CASES_GER GE
     WHERE
-        DAY_OCC = (SELECT MAX(DAY_OCC) FROM V_COVID_CASES_GER );
+        GE.DAY_OCC = (SELECT MAX(MA.DAY_OCC) FROM V_COVID_CASES_GER MA );
 
 CREATE OR REPLACE FORCE VIEW V_COVID_CASES_INT AS
     SELECT
-        COUNTRY,
-        LAT,
-        LONGI,
-        DAY_OCC,
-        VALUE_CONFIRMED,
-        VALUE_CONFIRMED_BE,
-        VALUE_RECOVERED,
-        VALUE_RECOVERED_BE,
-        VALUE_DEATHS,
-        VALUE_DEATHS_BE,
-        VALUE_ACTIVE,
-        VALUE_ACTIVE_BE,
-        UPDATED_ON,
-        POPULATION,
-        (SELECT V('WORKSPACE_IMAGES') FROM DUAL) || 'flags/country/' || COUNTRY_SHORT || '.svg' AS FLAG
+        HI.COUNTRY,
+        HI.LAT,
+        HI.LONGI,
+        HI.DAY_OCC,
+        HI.VALUE_CONFIRMED,
+        HI.VALUE_CONFIRMED_BE,
+        HI.VALUE_RECOVERED,
+        HI.VALUE_RECOVERED_BE,
+        HI.VALUE_DEATHS,
+        HI.VALUE_DEATHS_BE,
+        HI.VALUE_ACTIVE,
+        HI.VALUE_ACTIVE_BE,
+        HI.UPDATED_ON,
+        PO.POPULATION,
+        (SELECT V('WORKSPACE_IMAGES') FROM DUAL) || 'flags/country/' || HI.COUNTRY_SHORT || '.svg' AS FLAG
     FROM
-        T_COVID_CASES_INT LEFT
-        JOIN T_POP_INT
-        USING ( COUNTRY );
+        T_COVID_CASES_INT HI LEFT
+        JOIN T_POP_INT PO
+        ON HI.COUNTRY = PO.COUNTRY;
 
 CREATE OR REPLACE FORCE VIEW V_COVID_CASES_INT_LATEST AS
     SELECT
-        COUNTRY,
-        LAT,
-        LONGI,
-        DAY_OCC,
-        VALUE_CONFIRMED,
-        VALUE_CONFIRMED_BE,
-        VALUE_RECOVERED,
-        VALUE_RECOVERED_BE,
-        VALUE_DEATHS,
-        VALUE_DEATHS_BE,
-        VALUE_ACTIVE,
-        VALUE_ACTIVE_BE,
-        UPDATED_ON,
-        POPULATION,
-        FLAG
+        HI.COUNTRY,
+        HI.LAT,
+        HI.LONGI,
+        HI.DAY_OCC,
+        HI.VALUE_CONFIRMED,
+        HI.VALUE_CONFIRMED_BE,
+        HI.VALUE_RECOVERED,
+        HI.VALUE_RECOVERED_BE,
+        HI.VALUE_DEATHS,
+        HI.VALUE_DEATHS_BE,
+        HI.VALUE_ACTIVE,
+        HI.VALUE_ACTIVE_BE,
+        HI.UPDATED_ON,
+        HI.POPULATION,
+        HI.FLAG
     FROM
-        V_COVID_CASES_INT
+        V_COVID_CASES_INT HI
     WHERE
-        DAY_OCC = (SELECT MAX(DAY_OCC) FROM V_COVID_CASES_INT );
+        HI.DAY_OCC = (SELECT MAX(MA.DAY_OCC) FROM V_COVID_CASES_INT MA);
         
 CREATE OR REPLACE FORCE VIEW V_COVID_DASHBOARD_WORLD AS
 SELECT
@@ -1262,7 +1262,7 @@ JSON_OBJECT (
         'legendShow' VALUE 0,
         'legendPosition' VALUE 'bottom',
         'gaugeType' VALUE 'multi',
-        'gaugeFullCircle' VALUE 0),
+        'gaugeFullCircle' VALUE 1),
     'itemData' VALUE (
         SELECT
         JSON_ARRAYAGG(
@@ -1328,7 +1328,7 @@ JSON_OBJECT (
         'legendShow' VALUE 0,
         'legendPosition' VALUE 'bottom',
         'gaugeType' VALUE 'multi',
-        'gaugeFullCircle' VALUE 0),
+        'gaugeFullCircle' VALUE 1),
     'itemData' VALUE (
         SELECT
         JSON_ARRAYAGG(
