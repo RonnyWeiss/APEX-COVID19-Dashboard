@@ -36,11 +36,11 @@ BEGIN
                 FROM
                     TABLE ( APEX_DATA_PARSER.PARSE(
                         P_CONTENT     => VR_BLOB,
-                        P_FILE_NAME   => 'data.csv'
+                        P_FILE_NAME   => 'data.csv',
+                        P_SKIP_ROWS   => 1
                     ) )
                 WHERE
-                    LINE_NUMBER > 1
-                    AND SUBSTR(
+                    SUBSTR(
                         COL011,
                         1,
                         1
@@ -160,11 +160,11 @@ BEGIN
                         FROM
                             TABLE ( APEX_DATA_PARSER.PARSE(
                                 P_CONTENT     => VR_BLOB,
-                                P_FILE_NAME   => 'data.csv'
+                                P_FILE_NAME   => 'data.csv',
+                                P_SKIP_ROWS   => 1
                             ) )
                         WHERE
-                            LINE_NUMBER > 1
-                            AND SUBSTR(
+                            SUBSTR(
                                 COL011,
                                 1,
                                 1
@@ -316,11 +316,11 @@ BEGIN
                         FROM
                             TABLE ( APEX_DATA_PARSER.PARSE(
                                 P_CONTENT     => VR_BLOB,
-                                P_FILE_NAME   => 'data.csv'
+                                P_FILE_NAME   => 'data.csv',
+                                P_SKIP_ROWS   => 1
                             ) )
                         WHERE
-                            LINE_NUMBER > 1
-                            AND COL002 = 'de'
+                            COL002 = 'de'
                             AND COL003 != 'weitere Fälle bundesweit'
                     )
                 );
