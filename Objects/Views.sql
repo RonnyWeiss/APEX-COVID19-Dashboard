@@ -192,7 +192,7 @@ JSON_OBJECT (
         SELECT
         JSON_ARRAYAGG( 
             JSON_OBJECT(
-                'radius' VALUE VAL/1.6,
+                'radius' VALUE NVL(VAL/1.6,0),
                 'latitude' VALUE LAT,
                 'longitude' VALUE LONGI,
                 'link' VALUE NULL, --'javascript:apex.item(''P32_COUNTRY_FILTER'').setValue('''||COUNTRY||''');$(''#dashboard'').trigger(''apexrefresh'');void(0);',
@@ -741,7 +741,7 @@ JSON_OBJECT (
         SELECT
         JSON_ARRAYAGG( 
             JSON_OBJECT(
-                'radius' VALUE VAL*1.6,
+                'radius' VALUE NVL(VAL*1.6,0),
                 'latitude' VALUE LAT,
                 'longitude' VALUE LONGI,
                 'color' VALUE COLOR,
