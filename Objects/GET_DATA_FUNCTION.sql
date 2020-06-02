@@ -20,7 +20,7 @@ BEGIN
 
     IF ( SYSDATE - 1 / 24 ) > VR_LAST_DATE OR P_IN_FORCE = 1 THEN
         VR_BLOB := APEX_WEB_SERVICE.MAKE_REST_REQUEST_B(
-            P_URL           => 'https://funkeinteraktiv.b-cdn.net/history.v4.csv',
+            P_URL           => 'https://interaktiv.morgenpost.de/data/corona/history.v4.csv',
             P_HTTP_METHOD   => 'GET'
         );
         DELETE FROM T_COVID_CASES_INT;
