@@ -48,7 +48,7 @@ BEGIN
                     WHEN COUNTRY = 'Libya'
                          AND LONGI = - 4
                          AND LAT = 17 THEN
-                        'Libya (17,-4)'
+                        'Mali'
                     ELSE
                         COUNTRY
                 END,
