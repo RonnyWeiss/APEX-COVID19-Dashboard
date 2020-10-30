@@ -38,6 +38,7 @@ BEGIN
         VALUE_DEATHS_BE,
         VALUE_ACTIVE,
         VALUE_ACTIVE_BE,
+        POPULATION,
         UPDATED_ON
     )
         ( SELECT
@@ -91,6 +92,7 @@ BEGIN
                 ),
                 0
             ) AS VALUE_ACTIVE_BE,
+            POPULATION,
             UPDATED_ON
         FROM
             (
@@ -113,6 +115,7 @@ BEGIN
                         ),
                         0
                     ) AS VALUE_ACTIVE,
+                    POPULATION,
                     SYSDATE AS UPDATED_ON
                 FROM
                     JSON_TABLE ( VR_BLOB, '$[*]' ERROR ON ERROR
@@ -123,9 +126,10 @@ BEGIN
                             LAT NUMBER PATH '$.lat',
                             LONGI NUMBER PATH '$.lon',
                             DAY_OCC DATE PATH '$.date',
-                            VALUE_CONFIRMED DATE PATH '$.confirmed',
-                            VALUE_RECOVERED DATE PATH '$.recovered',
-                            VALUE_DEATHS DATE PATH '$.deaths'
+                            VALUE_CONFIRMED NUMBER PATH '$.confirmed',
+                            VALUE_RECOVERED NUMBER PATH '$.recovered',
+                            VALUE_DEATHS NUMBER PATH '$.deaths',
+                            POPULATION NUMBER PATH '$.population'
                         )
                     )
                 WHERE
@@ -152,6 +156,7 @@ BEGIN
         VALUE_DEATHS_BE,
         VALUE_ACTIVE,
         VALUE_ACTIVE_BE,
+        POPULATION,
         UPDATED_ON
     )
         ( SELECT
@@ -167,6 +172,7 @@ BEGIN
             VALUE_DEATHS,
             VALUE_ACTIVE,
             VALUE_ACTIVE,
+            POPULATION,
             UPDATED_ON
         FROM
             T_COVID_CASES_INT BE
@@ -198,6 +204,7 @@ BEGIN
         VALUE_DEATHS_BE,
         VALUE_ACTIVE,
         VALUE_ACTIVE_BE,
+        POPULATION,
         UPDATED_ON
     )
         ( SELECT
@@ -241,6 +248,7 @@ BEGIN
                 ),
                 0
             ) AS VALUE_ACTIVE_BE,
+            POPULATION,
             UPDATED_ON
         FROM
             (
@@ -262,17 +270,20 @@ BEGIN
                         ),
                         0
                     ) AS VALUE_ACTIVE,
+                    POPULATION,
                     SYSDATE AS UPDATED_ON
                 FROM
                     JSON_TABLE ( VR_BLOB, '$[*]' ERROR ON ERROR
                         COLUMNS (
                             PROVINCE VARCHAR2 PATH '$.label',
+                            LABEL_PARENT VARCHAR2 PATH '$.label_parent',
                             LAT NUMBER PATH '$.lat',
                             LONGI NUMBER PATH '$.lon',
                             DAY_OCC DATE PATH '$.date',
-                            VALUE_CONFIRMED DATE PATH '$.confirmed',
-                            VALUE_RECOVERED DATE PATH '$.recovered',
-                            VALUE_DEATHS DATE PATH '$.deaths'
+                            VALUE_CONFIRMED NUMBER PATH '$.confirmed',
+                            VALUE_RECOVERED NUMBER PATH '$.recovered',
+                            VALUE_DEATHS NUMBER PATH '$.deaths',
+                            POPULATION NUMBER PATH '$.population'
                         )
                     )
                 WHERE
@@ -296,6 +307,7 @@ BEGIN
             SUM(VALUE_DEATHS_BE) AS VALUE_DEATHS_BE,
             SUM(VALUE_ACTIVE) AS VALUE_ACTIVE,
             SUM(VALUE_ACTIVE_BE) AS VALUE_ACTIVE_BE,
+            SUM(POPULATION) AS POPULATION,
             DAY_OCC
         FROM
             T_COVID_CASES_GER
@@ -310,7 +322,8 @@ BEGIN
         VALUE_DEATHS = REC.VALUE_DEATHS,
         VALUE_DEATHS_BE = REC.VALUE_DEATHS_BE,
         VALUE_ACTIVE = REC.VALUE_ACTIVE,
-        VALUE_ACTIVE_BE = REC.VALUE_ACTIVE_BE
+        VALUE_ACTIVE_BE = REC.VALUE_ACTIVE_BE,
+        POPULATION = REC.POPULATION
     WHERE
         DAY_OCC = REC.DAY_OCC
         AND COUNTRY = C_GERMAN_STR;
