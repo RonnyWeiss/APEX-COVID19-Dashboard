@@ -1,6 +1,8 @@
 CREATE OR REPLACE PROCEDURE REFRESH_COVID_DATA IS
+
     VR_LAST_DATE   DATE := NULL;
     VR_BLOB        BLOB := EMPTY_BLOB();
+    C_GERMAN_STR   CONSTANT VARCHAR(50) := 'Deutschland';
 BEGIN
     BEGIN
         SELECT
@@ -17,7 +19,7 @@ BEGIN
     END;
 
     VR_BLOB := APEX_WEB_SERVICE.MAKE_REST_REQUEST_B(
-        P_URL           => 'https://interaktiv.morgenpost.de/data/corona/history.v4.csv',
+        P_URL           => 'https://raw.githubusercontent.com/RonnyWeiss/APEX-COVID19-Dashboard/master/data/covid-data.json',
         P_HTTP_METHOD   => 'GET'
     );
     DELETE FROM T_COVID_CASES_INT;
@@ -93,54 +95,41 @@ BEGIN
         FROM
             (
                 SELECT
-                    COL005    AS COUNTRY,
-                    COL001    AS COUNTRY_SHORT,
-                    TO_NUMBER(
-                        DECODE(
-                            COL008,
-                            'null',
-                            0,
-                            COL008
-                        )
-                    ) AS LAT,
-                    TO_NUMBER(
-                        DECODE(
-                            COL007,
-                            'null',
-                            0,
-                            COL007
-                        )
-                    ) AS LONGI,
-                    TO_DATE(
-                        COL010,
-                        'YYYYMMDD'
-                    ) AS DAY_OCC,
-                    TO_NUMBER(COL014) AS VALUE_CONFIRMED,
-                    TO_NUMBER(COL015) AS VALUE_RECOVERED,
-                    TO_NUMBER(COL016) AS VALUE_DEATHS,
+                    COUNTRY,
+                    COUNTRY_SHORT,
+                    LAT,
+                    LONGI,
+                    DAY_OCC,
+                    VALUE_CONFIRMED,
+                    VALUE_RECOVERED,
+                    VALUE_DEATHS,
                     GREATEST(
-                        TO_NUMBER(COL014) - NVL(
-                            TO_NUMBER(COL015),
+                        VALUE_CONFIRMED - NVL(
+                            VALUE_RECOVERED,
                             0
                         ) - NVL(
-                            TO_NUMBER(COL016),
+                            VALUE_DEATHS,
                             0
                         ),
                         0
                     ) AS VALUE_ACTIVE,
-                    SYSDATE   AS UPDATED_ON
+                    SYSDATE AS UPDATED_ON
                 FROM
-                    TABLE ( APEX_DATA_PARSER.PARSE(
-                        P_CONTENT     => VR_BLOB,
-                        P_FILE_NAME   => 'data.csv',
-                        P_SKIP_ROWS   => 1
-                    ) )
+                    JSON_TABLE ( VR_BLOB, '$[*]' ERROR ON ERROR
+                        COLUMNS (
+                            COUNTRY VARCHAR2 PATH '$.label',
+                            LABEL_PARENT VARCHAR2 PATH '$.label_parent',
+                            COUNTRY_SHORT VARCHAR2 PATH '$.id',
+                            LAT NUMBER PATH '$.lat',
+                            LONGI NUMBER PATH '$.lon',
+                            DAY_OCC DATE PATH '$.date',
+                            VALUE_CONFIRMED DATE PATH '$.confirmed',
+                            VALUE_RECOVERED DATE PATH '$.recovered',
+                            VALUE_DEATHS DATE PATH '$.deaths'
+                        )
+                    )
                 WHERE
-                    SUBSTR(
-                        COL011,
-                        1,
-                        1
-                    ) = '0'
+                    LABEL_PARENT IS NULL
             )
         );
 
@@ -256,50 +245,38 @@ BEGIN
         FROM
             (
                 SELECT
-                    COL003    AS PROVINCE,
-                    TO_NUMBER(
-                        DECODE(
-                            COL008,
-                            'null',
-                            51.1642292,
-                            COL008
-                        )
-                    ) AS LAT,
-                    TO_NUMBER(
-                        DECODE(
-                            COL007,
-                            'null',
-                            10.4541194,
-                            COL007
-                        )
-                    ) AS LONGI,
-                    TO_DATE(
-                        COL010,
-                        'YYYYMMDD'
-                    ) AS DAY_OCC,
-                    TO_NUMBER(COL014) AS VALUE_CONFIRMED,
-                    TO_NUMBER(COL015) AS VALUE_RECOVERED,
-                    TO_NUMBER(COL016) AS VALUE_DEATHS,
+                    PROVINCE,
+                    LAT,
+                    LONGI,
+                    DAY_OCC,
+                    VALUE_CONFIRMED,
+                    VALUE_RECOVERED,
+                    VALUE_DEATHS,
                     GREATEST(
-                        TO_NUMBER(COL014) - NVL(
-                            TO_NUMBER(COL015),
+                        VALUE_CONFIRMED - NVL(
+                            VALUE_RECOVERED,
                             0
                         ) - NVL(
-                            TO_NUMBER(COL016),
+                            VALUE_DEATHS,
                             0
                         ),
                         0
                     ) AS VALUE_ACTIVE,
-                    SYSDATE   AS UPDATED_ON
+                    SYSDATE AS UPDATED_ON
                 FROM
-                    TABLE ( APEX_DATA_PARSER.PARSE(
-                        P_CONTENT     => VR_BLOB,
-                        P_FILE_NAME   => 'data.csv',
-                        P_SKIP_ROWS   => 1
-                    ) )
+                    JSON_TABLE ( VR_BLOB, '$[*]' ERROR ON ERROR
+                        COLUMNS (
+                            PROVINCE VARCHAR2 PATH '$.label',
+                            LAT NUMBER PATH '$.lat',
+                            LONGI NUMBER PATH '$.lon',
+                            DAY_OCC DATE PATH '$.date',
+                            VALUE_CONFIRMED DATE PATH '$.confirmed',
+                            VALUE_RECOVERED DATE PATH '$.recovered',
+                            VALUE_DEATHS DATE PATH '$.deaths'
+                        )
+                    )
                 WHERE
-                    COL002 = 'de'
-                    AND COL003 != 'weitere Fälle bundesweit'
+                    LABEL_PARENT = C_GERMAN_STR
             )
         );
 
@@ -336,7 +313,7 @@ BEGIN
         VALUE_ACTIVE_BE = REC.VALUE_ACTIVE_BE
     WHERE
         DAY_OCC = REC.DAY_OCC
-        AND COUNTRY = 'Germany';
+        AND COUNTRY = C_GERMAN_STR;
 
     END LOOP;
 
