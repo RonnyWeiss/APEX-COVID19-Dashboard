@@ -134,7 +134,7 @@ BEGIN
                     )
                 WHERE
                     LABEL_PARENT IS NULL
-            )
+            ) WHERE DAY_OCC < TRUNC(SYSDATE)
         );
 
     IF SQL%ROWCOUNT = 0 THEN
@@ -143,51 +143,6 @@ BEGIN
             'No data is loaded for int.'
         );
     END IF;
-    INSERT INTO T_COVID_CASES_INT (
-        COUNTRY,
-        LAT,
-        LONGI,
-        DAY_OCC,
-        VALUE_CONFIRMED,
-        VALUE_CONFIRMED_BE,
-        VALUE_RECOVERED,
-        VALUE_RECOVERED_BE,
-        VALUE_DEATHS,
-        VALUE_DEATHS_BE,
-        VALUE_ACTIVE,
-        VALUE_ACTIVE_BE,
-        POPULATION,
-        UPDATED_ON
-    )
-        ( SELECT
-            COUNTRY,
-            LAT,
-            LONGI,
-            DAY_OCC + 1,
-            VALUE_CONFIRMED,
-            VALUE_CONFIRMED,
-            VALUE_RECOVERED,
-            VALUE_RECOVERED,
-            VALUE_DEATHS,
-            VALUE_DEATHS,
-            VALUE_ACTIVE,
-            VALUE_ACTIVE,
-            POPULATION,
-            UPDATED_ON
-        FROM
-            T_COVID_CASES_INT BE
-        WHERE
-            BE.DAY_OCC = TRUNC(SYSDATE - 1)
-            AND NOT EXISTS (
-                SELECT
-                    1
-                FROM
-                    T_COVID_CASES_INT TOD
-                WHERE
-                    BE.COUNTRY = TOD.COUNTRY
-                    AND TOD.DAY_OCC = TRUNC(SYSDATE)
-            )
-        );
 
     DELETE FROM T_COVID_CASES_GER;
 
@@ -289,6 +244,7 @@ BEGIN
                 WHERE
                     LABEL_PARENT = C_GERMAN_STR
             )
+			WHERE DAY_OCC < TRUNC(SYSDATE)
         );
 
     IF SQL%ROWCOUNT = 0 THEN
@@ -297,37 +253,5 @@ BEGIN
             'No data is loaded for ger.'
         );
     END IF;
-    FOR REC IN (
-        SELECT
-            SUM(VALUE_CONFIRMED) AS VALUE_CONFIRMED,
-            SUM(VALUE_CONFIRMED_BE) AS VALUE_CONFIRMED_BE,
-            SUM(VALUE_RECOVERED) AS VALUE_RECOVERED,
-            SUM(VALUE_RECOVERED_BE) AS VALUE_RECOVERED_BE,
-            SUM(VALUE_DEATHS) AS VALUE_DEATHS,
-            SUM(VALUE_DEATHS_BE) AS VALUE_DEATHS_BE,
-            SUM(VALUE_ACTIVE) AS VALUE_ACTIVE,
-            SUM(VALUE_ACTIVE_BE) AS VALUE_ACTIVE_BE,
-            SUM(POPULATION) AS POPULATION,
-            DAY_OCC
-        FROM
-            T_COVID_CASES_GER
-        GROUP BY
-            DAY_OCC
-    ) LOOP UPDATE T_COVID_CASES_INT
-    SET
-        VALUE_CONFIRMED = REC.VALUE_CONFIRMED,
-        VALUE_CONFIRMED_BE = REC.VALUE_CONFIRMED_BE,
-        VALUE_RECOVERED = REC.VALUE_RECOVERED,
-        VALUE_RECOVERED_BE = REC.VALUE_RECOVERED_BE,
-        VALUE_DEATHS = REC.VALUE_DEATHS,
-        VALUE_DEATHS_BE = REC.VALUE_DEATHS_BE,
-        VALUE_ACTIVE = REC.VALUE_ACTIVE,
-        VALUE_ACTIVE_BE = REC.VALUE_ACTIVE_BE,
-        POPULATION = REC.POPULATION
-    WHERE
-        DAY_OCC = REC.DAY_OCC
-        AND COUNTRY = C_GERMAN_STR;
-
-    END LOOP;
 
 END;

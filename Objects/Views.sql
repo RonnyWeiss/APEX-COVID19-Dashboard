@@ -116,7 +116,7 @@ CREATE OR REPLACE FORCE VIEW V_COVID_DASHBOARD_WORLD AS
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()'),
+    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_COUNTRY_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
@@ -136,7 +136,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()'),
+    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_COUNTRY_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
@@ -156,7 +156,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()'),
+    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_COUNTRY_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
@@ -176,7 +176,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()'),
+    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_COUNTRY_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
@@ -196,7 +196,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'map',
-    'title' VALUE NVL(V('P32_COUNTRY_FILTER'), 'Worldwide') || ' - cases of active and dead',
+    'title' VALUE NVL(V('P32_COUNTRY_FILTER'), 'Worldwide') || ' - cases of active and dead' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 8,
     'height' VALUE 480,
     'isMarked' VALUE DECODE(V('P32_COUNTRY_FILTER'),NULL,0,1),
@@ -348,7 +348,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'list',
-    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_ACTIVE') ||'"></span> Active (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_ACTIVE') ||'"></span> Active (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'height' VALUE 430,
     'oversize' VALUE 0,
@@ -385,7 +385,7 @@ UNION ALL
 SELECT
     JSON_OBJECT (
         'itemType' VALUE 'list',
-        'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_DEAD') ||'"></span> Dead (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+        'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_DEAD') ||'"></span> Dead (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
         'colSpan' VALUE 2,
         'height' VALUE 430,
         'oversize' VALUE 0,
@@ -420,7 +420,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'list',
-    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_CONFIRMED') ||'"></span> Confirmed (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_CONFIRMED') ||'"></span> Confirmed (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'height' VALUE 425,
     'oversize' VALUE 0,
@@ -457,7 +457,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'list',
-    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_RECOVERED')||'"></span> Recovered (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_RECOVERED')||'"></span> Recovered (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'height' VALUE 425,
     'oversize' VALUE 0,
@@ -494,7 +494,7 @@ FROM
 UNION ALL
 SELECT
 JSON_OBJECT (
-    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()'),
+    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_COUNTRY_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'itemType' VALUE 'chart',
     'colSpan' VALUE 2,
     'height' VALUE 240,
@@ -660,7 +660,7 @@ CREATE OR REPLACE FORCE VIEW V_COVID_DASHBOARD_GER AS
   SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()'),
+    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_PROVINCE_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter_ger'');void(0);',
@@ -680,7 +680,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()'),
+    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_PROVINCE_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter_ger'');void(0);',
@@ -700,7 +700,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()'),
+    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_PROVINCE_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter_ger'');void(0);',
@@ -720,7 +720,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()'),
+    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_PROVINCE_FILTER') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'isMarked' VALUE DECODE(V('P32_PROVINCE_FILTER'),NULL,0,1),
     'optionsLink' VALUE 'javascript:openModal(''filter_ger'');void(0);',
@@ -740,7 +740,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'map',
-    'title' VALUE NVL(V('P32_PROVINCE_FILTER'), 'German') || ' - cases of active and dead',
+    'title' VALUE NVL(V('P32_PROVINCE_FILTER'), 'German') || ' - cases of active and dead' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 8,
     'height' VALUE 480,
     'isMarked' VALUE DECODE(V('P32_PROVINCE_FILTER'),NULL,0,1),
@@ -896,7 +896,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'list',
-    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_ACTIVE') ||'"></span> Active (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_ACTIVE') ||'"></span> Active (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'height' VALUE 430,
     'oversize' VALUE 0,
@@ -933,7 +933,7 @@ UNION ALL
 SELECT
     JSON_OBJECT (
         'itemType' VALUE 'list',
-        'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_DEAD') ||'"></span> Dead (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+        'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_DEAD') ||'"></span> Dead (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
         'colSpan' VALUE 2,
         'height' VALUE 430,
         'oversize' VALUE 0,
@@ -968,7 +968,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'list',
-    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_CONFIRMED')||'"></span> Confirmed (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_CONFIRMED')||'"></span> Confirmed (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'height' VALUE 425,
     'oversize' VALUE 0,
@@ -1005,7 +1005,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'list',
-    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_RECOVERED') ||'"></span> Recovered (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')',
+    'title' VALUE '<span class="fa fa-circle title-ico" style="color:'||V('P32_COLOR_RECOVERED') ||'"></span> Recovered (<span class="fa fa-sort title-ico"></span> ' || DECODE(V('P32_LIST_ORDER'),1,'Cases/100k','Total') || ')' || V('P32_UPDATED_ON'),
     'colSpan' VALUE 2,
     'height' VALUE 425,
     'oversize' VALUE 0,
@@ -1042,7 +1042,7 @@ FROM
 UNION ALL
 SELECT
 JSON_OBJECT (
-    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_PROVINCE_FILTER')||')','()'),
+    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_PROVINCE_FILTER')||')','()') || V('P32_UPDATED_ON'),
     'itemType' VALUE 'chart',
     'colSpan' VALUE 2,
     'height' VALUE 240,
@@ -1113,7 +1113,7 @@ CREATE OR REPLACE FORCE VIEW V_COVID_DASHBOARD_COMPARE AS
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()'),
+    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1132,7 +1132,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()'),
+    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1151,7 +1151,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()'),
+    'title' VALUE 'Total active ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1170,7 +1170,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()'),
+    'title' VALUE 'Total dead ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1189,7 +1189,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()'),
+    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1208,7 +1208,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()'),
+    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1227,7 +1227,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()'),
+    'title' VALUE 'Total confirmed ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1246,7 +1246,7 @@ UNION ALL
 SELECT
 JSON_OBJECT (
     'itemType' VALUE 'card',
-    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()'),
+    'title' VALUE 'Total recovered ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()') || V('P32_UPDATED_ON'),
     'colSpan' VALUE 3,
     'optionsLink' VALUE 'javascript:openModal(''filter'');void(0);',
     'optionsLinkIcon' VALUE 'fa-filter',
@@ -1264,7 +1264,7 @@ JSON_OBJECT (
 UNION ALL
 SELECT
 JSON_OBJECT (
-    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()'),
+    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_COMPARE_1') || ')','()') || V('P32_UPDATED_ON'),
     'itemType' VALUE 'chart',
     'colSpan' VALUE 6,
     'height' VALUE 320,
@@ -1330,7 +1330,7 @@ FROM DUAL
 UNION ALL
 SELECT
 JSON_OBJECT (
-    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()'),
+    'title' VALUE 'Distribution of latest ' || NULLIF('(' || V('P32_COMPARE_2') || ')','()') || V('P32_UPDATED_ON'),
     'itemType' VALUE 'chart',
     'colSpan' VALUE 6,
     'height' VALUE 320,
