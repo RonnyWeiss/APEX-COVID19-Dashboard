@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE REFRESH_COVID_DATA IS
+create or replace PROCEDURE REFRESH_COVID_DATA IS
 
     VR_LAST_DATE   DATE := NULL;
     VR_BLOB        BLOB := EMPTY_BLOB();
@@ -22,7 +22,8 @@ BEGIN
         P_URL           => 'https://raw.githubusercontent.com/RonnyWeiss/APEX-COVID19-Dashboard/master/data/covid-data.json',
         P_HTTP_METHOD   => 'GET'
     );
-    DELETE FROM T_COVID_CASES_INT;
+    
+    EXECUTE IMMEDIATE 'TRUNCATE TABLE T_COVID_CASES_INT';
 
     INSERT INTO T_COVID_CASES_INT (
         COUNTRY,
@@ -134,7 +135,7 @@ BEGIN
                     )
                 WHERE
                     LABEL_PARENT IS NULL
-            ) WHERE DAY_OCC < TRUNC(SYSDATE)
+            ) WHERE DAY_OCC >= TRUNC(SYSDATE-365) AND DAY_OCC < TRUNC(SYSDATE)
         );
 
     IF SQL%ROWCOUNT = 0 THEN
@@ -144,7 +145,7 @@ BEGIN
         );
     END IF;
 
-    DELETE FROM T_COVID_CASES_GER;
+    EXECUTE IMMEDIATE 'TRUNCATE TABLE T_COVID_CASES_GER';
 
     INSERT INTO T_COVID_CASES_GER (
         PROVINCE,
